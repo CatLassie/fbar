@@ -1,0 +1,97 @@
+# LEVEL 4, Task 1 (escape-pods)
+
+
+from time import process_time
+
+
+# flow network
+# Ford-Fulkerson Algorithm
+def solution(entrances, exits, path):
+  total = 0
+  max_cap = 2000000
+  size = len(path)
+
+  # augment path with single source and single sink with maximum capacity connections to each source/sink
+  size_aug = size + 2
+  for i, row in enumerate(path):
+    row.append(0)
+    row.append(max_cap if i in exits else 0)
+
+  source_row = [max_cap if r in entrances else 0 for r in range(0, size_aug)]
+  sink_row = (size_aug) * [0]
+  path.append(source_row)
+  path.append(sink_row)
+
+  source_idx = size_aug - 2
+  sink_idx = size_aug - 1
+
+  feasible_path = []
+  while feasible_path != None:
+    feasible_path, bunny_number = find_feasible_path(path, source_idx, sink_idx, max_cap)
+    if feasible_path != None:
+      total += bunny_number
+      for i in range(0, len(feasible_path) - 1):
+        path[feasible_path[i]][feasible_path[i+1]] -= bunny_number
+        path[feasible_path[i+1]][feasible_path[i]] += bunny_number
+
+  return total
+
+
+def find_feasible_path(adj_matrix, start, end, max_cap):
+  """Find feasible path through graph and maximum number of bunnies that can fit through.
+
+  Args:
+    adj_matrix (list): adjacency matrix of rooms and corridor capacities
+    start (int): source index
+    end (int): sink index
+    max_cap (int): maximum possible number of bunnies
+
+  Returns:
+    list: room indices forming a path from source to sink
+    int: the maximum number of bunnies that can fit along the path
+  """
+  path_with_capacities = dfs(adj_matrix, start, end, max_cap)
+
+  bunny_number = None
+  feasible_path = None
+  if path_with_capacities != None:
+    bunny_number = min([el[1] for el in path_with_capacities])
+    feasible_path = [el[0] for el in path_with_capacities]
+
+  return feasible_path, bunny_number
+
+
+def dfs(graph, start_idx, end_idx, max_cap):
+  """Depth First Search from source to sink.
+
+  Args:
+    graph (list): adjacency matrix of rooms and corridor capacities
+    start_idx (int): source index
+    end_idx (int): sink index
+    max_cap (int): maximum possible number of bunnies
+
+  Returns:
+    list: list of room indices and incoming corridor capacities forming path from source to sink
+  """
+  stack = [(start_idx, [(start_idx, max_cap)])]
+  visited = set()
+  while stack:
+    (curr_idx, curr_path) = stack.pop()
+    if curr_idx not in visited:
+      if curr_idx == end_idx:
+        return curr_path
+      visited.add(curr_idx)
+      for next_idx, capacity in enumerate(graph[curr_idx]):
+        if capacity != 0:
+          stack.append((next_idx, curr_path + [(next_idx, capacity)]))
+
+
+'''
+n1 = ([0], [3], [[0, 7, 0, 0], [0, 0, 6, 0], [0, 0, 0, 8], [9, 0, 0, 0]]) # -> 6
+n2 = ([0, 1], [4, 5], [[0, 0, 4, 6, 0, 0], [0, 0, 5, 2, 0, 0], [0, 0, 0, 0, 4, 4], [0, 0, 0, 0, 6, 6], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]) # -> 16
+
+t1 = process_time()
+s = solution(*n1)
+t2 = process_time()
+print('solution', s, 'time:', t2-t1, 'seconds')
+'''

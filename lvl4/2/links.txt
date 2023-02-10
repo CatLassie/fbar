@@ -1,0 +1,38 @@
+https://en.wikipedia.org/wiki/Travelling_salesman_problem
+https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm
+
+https://arxiv.org/ftp/arxiv/papers/1110/1110.4052.pdf
+
+https://cs.stackexchange.com/questions/12387/traveling-salesman-problem-negative-distances-allowed
+https://cs.stackexchange.com/questions/43731/travelling-salesman-which-can-repeat-cities
+
+https://or.stackexchange.com/questions/5555/tsp-with-repeated-city-visits
+
+why Dijkstra fails with negative weights:
+https://stackoverflow.com/questions/13159337/why-doesnt-dijkstras-algorithm-work-for-negative-weight-edges#:~:text=Since%20Dijkstra's%20goal%20is%20to,nodes%20that%20it%20has%20visited.
+
+
+
+algos:
+
+https://en.wikipedia.org/wiki/Shortest_path_problem#Directed_graphs_with_nonnegative_weights
+https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Algorithm
+
+maybe:
+https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+OR:
+https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm
+
+overkill?
+https://en.wikipedia.org/wiki/Johnson%27s_algorithm
+
+could be good
+https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+
+
+TRY (all source vs single source like BellmanFord):
+https://www.geeksforgeeks.org/johnsons-algorithm/
+
+https://en.wikipedia.org/wiki/Branch_and_bound
+
+https://www.geeksforgeeks.org/travelling-salesman-problem-using-dynamic-programming/

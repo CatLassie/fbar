@@ -1,0 +1,131 @@
+# LEVEL 4, Task 2 (running-with-bunnies)
+
+
+from time import process_time
+from itertools import combinations, permutations
+
+
+# Reduction to a version of TSP that preserves the triangle inequality
+def solution(times, time_limit):  
+  n = len(times)
+  times_sp = arcs_to_shortest_distances(times, n)
+
+  # early return for negative weight cycle case (all worker ids)
+  if times_sp == None:
+    return list(range(0, n-2))
+
+  most_locations = []
+  all_bunny_locations = list(range(1, n-1))
+
+  # iterate through bunny location number ranging from zero bunnies to all bunnies
+  for i in range(1, n-1):
+    feasible_locations = find_feasible_locations(times_sp, time_limit, i, all_bunny_locations, n)
+
+    # early stopping (there is no feasible solution of greater size beause of triangle inequality)
+    if feasible_locations is None:
+      break
+
+    most_locations = feasible_locations
+
+  # bunny ids start from 0, bunny locations start from 1
+  worker_ids = [l-1 for l in most_locations]
+  worker_ids.sort()
+  return worker_ids
+
+
+def find_feasible_locations(adj_matrix, limit, location_number, all_bunny_locations, n):
+  """Find list of bunny locations of given size that are feasible to visit within time limit.
+
+  Args:
+    adj_matrix (list): adjacency matrix of locations and travel times between them
+    limit (int): time limit
+    location_number (int): number of bunny locations attempted to visit during search
+    all_bunny_locations (list): list of all bunny locations (omit start and finish)
+    n (int): total number of locations
+
+  Returns:
+    list: list of bunny locations of given size that is possible to visit within time limit
+          or None in case the given number of locations is not feasible within time limit
+  """
+  loc_combinations = list(combinations(all_bunny_locations, location_number))
+
+  for _, loc_list in enumerate(loc_combinations):
+    loc_list_permutations = list(permutations(loc_list))
+
+    for _, locs in enumerate(loc_list_permutations):
+      path = [0] + list(locs) + [n-1]
+      total_dist = 0
+      for i in range(len(path)-1):
+        total_dist += adj_matrix[path[i]][path[i+1]]
+      
+      if total_dist <= limit:
+        return locs
+    
+  return None
+
+
+def arcs_to_shortest_distances(adj_matrix, n):
+  """Replace graph arcs with shortest distances (preserving the trinagle inequality, no need to revisit locations).
+
+  Args:
+    adj_matrix (list): adjacency matrix of locations and travel times between them
+    n (int): total number of locations
+
+  Returns:
+    list: adjacency matrix of locations and travel times between them preserving the triangle inequality
+          or None in case of negative length cycle
+  """
+  adj_matrix_shortest = []
+  for i, _ in enumerate(adj_matrix):
+    distances = shortest_distances(adj_matrix, i, n)
+
+    # negative length cycle case
+    if distances == None:
+      return None
+
+    adj_matrix_shortest.append(distances)
+  
+  return adj_matrix_shortest
+
+
+def shortest_distances(adj_matrix, start, n):
+  """Bellman-Ford lite version (no path calculation).
+
+  Args:
+    adj_matrix (list): adjacency matrix of locations and travel times between them
+    start (int): starting location for the search
+    n (int): total number of locations
+
+  Returns:
+    list: shortest path distances from start to all locations or None in case of negative length cycle
+  """
+  dist = n*[float('inf')]
+  dist[start] = 0
+
+  for _ in range(n-1):
+    for i, row in enumerate(adj_matrix):
+      for j, col in enumerate(row):
+        if dist[i] + col < dist[j]:
+          dist[j] = dist[i] + col
+
+  # detect negative length cycle
+  for i, row in enumerate(adj_matrix):
+    for j, col in enumerate(row):
+      if dist[i] + col < dist[j]:
+        return None
+
+  return dist
+
+
+'''
+n1 = ([[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0]], 3) # -> [0, 1]
+n2 = ([[0, 2, 2, 2, -1], [9, 0, 2, 2, -1], [9, 3, 0, 2, -1], [9, 3, 2, 0, -1], [9, 3, 2, 2, 0]], 1) # -> [1, 2]
+n3 = ([], 1) # -> []
+n4 = ([[0, 2, 1], [9, 0, 1], [9, -3, 0]], 0) # -> [0]
+n5 = ([[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]], 0) # -> [0, 1, 2, 3, 4]
+
+t1 = process_time()
+s = solution(*n2)
+t2 = process_time()
+print('solution', s, 'time:', t2-t1, 'seconds')
+'''

@@ -1,0 +1,25 @@
+- integration
+- unit square geometry
+- gauss sum formula
+- log(n) runtime
+- binary or hex representation
+- closed form
+- generating functions
+- square root algorithm (also binary)
+- offset (sum - floored_sum) is half of the input number (sometimes off by 1)
+
+- calculate an approximation and then go brute force from there (like for 1005, do 1000 fast and 5 slow)
+- whats the expected value for infinite? or expected value for probability dstributions?
+- maybe O(n/log(n)) as in, some values dont need to be calculated explicitly (like every third is automatic?)
+- string input, do computaiton per digit ? (log_10 time)
+
+- approximation algorithm
+
+- TRUNCATE SQUARE_ROOT(2) and see periods of repeating overflows
+
+
+fraction sums for 0.4 and inreases per 10
+
+0   0   1   2   4   6   8  11  14  18    +4
+22  26  31  36  42  48  54 61  68  76    +8
+84  92  101								 +12

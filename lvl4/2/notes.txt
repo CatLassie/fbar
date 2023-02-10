@@ -1,0 +1,21 @@
+Could be reduced to a TSP?
+
+Graph is:
+- fully connected
+- asymmetric edges (arcs)
+- no triangle inequality! (can happen: a->c >= a->b + b->c)
+- negative weights
+- with negative cycles
+
+procedure:
+- assuming there are no negative cycles
+	- otherwise detect cycle and return all [0,1,2,3,4]
+- TSP with triangle inequality violated (multiple same city visits) can be reduced to TSP (no re-visits)
+	- recalculate all d(u,v) distances -> replace with shortest paths, use Dijkstra, Bellman-Form,
+	Floyd-Warshall, SPFA, etc.
+	- TRY JOHNSONS ALGORITHM!
+- Solve TSP with budget, start + end point
+	- TRY WITH PATH NOT JUST WEIGHTS (MARK NODES VISITED THROUGH SHORTEST PATH)
+	- TRY BRANCH AND BOUND OR DYNAMIC PROGRAMMING
+
+- is 999 time limit a factor?
